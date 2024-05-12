@@ -32,23 +32,23 @@ ENV ROBOT_UID 1000
 ENV ROBOT_GID 1000
 
 # Dependency versions
-ENV AWS_CLI_VERSION 1.32.36
+ENV AWS_CLI_VERSION 1.32.103
 ENV AXE_SELENIUM_LIBRARY_VERSION 2.1.6
-ENV BROWSER_LIBRARY_VERSION 18.0.0
-ENV CHROME_VERSION 123.0.6312.122
-ENV DATABASE_LIBRARY_VERSION 1.4.3
-ENV DATADRIVER_VERSION 1.10.0
+ENV BROWSER_LIBRARY_VERSION 18.4.0
+ENV CHROME_VERSION 124.0.6367.201
+ENV DATABASE_LIBRARY_VERSION 1.4.4
+ENV DATADRIVER_VERSION 1.11.1
 ENV DATETIMETZ_VERSION 1.0.6
-ENV MICROSOFT_EDGE_VERSION 121.0.2277.106
+ENV MICROSOFT_EDGE_VERSION 124.0.2478.97
 ENV FAKER_VERSION 5.0.0
 ENV FIREFOX_VERSION 125.0
 ENV FTP_LIBRARY_VERSION 1.9
-ENV GECKO_DRIVER_VERSION v0.33.0
+ENV GECKO_DRIVER_VERSION v0.34.0
 ENV IMAP_LIBRARY_VERSION 0.4.6
 ENV PABOT_VERSION 2.18.0
-ENV REQUESTS_VERSION 0.9.6
+ENV REQUESTS_VERSION 0.9.7
 ENV ROBOT_FRAMEWORK_VERSION 7.0
-ENV SELENIUM_LIBRARY_VERSION 6.2.0
+ENV SELENIUM_LIBRARY_VERSION 6.3.0
 ENV SSH_LIBRARY_VERSION 3.8.0
 ENV XVFB_VERSION 1.20
 
@@ -74,6 +74,7 @@ RUN dnf upgrade -y --refresh \
     tzdata \
     xorg-x11-server-Xvfb-${XVFB_VERSION}* \
     dnf-plugins-core \
+    git-all \
   && dnf clean all
 
 # Install Chrome for Testing with dependencies
@@ -117,10 +118,12 @@ RUN pip3 install \
   robotframework-sshlibrary==$SSH_LIBRARY_VERSION \
   axe-selenium-python==$AXE_SELENIUM_LIBRARY_VERSION \
   # Install awscli to be able to upload test reports to AWS S3
-  awscli==$AWS_CLI_VERSION \
-  # Install an older Selenium version to avoid issues when running tests
-  # https://github.com/robotframework/SeleniumLibrary/issues/1835
-  selenium==4.9.0
+  awscli==$AWS_CLI_VERSION
+
+# Install RPA Framework libraries
+RUN pip3 install \
+  --no-cache-dir \
+  "git+https://github.com/andy-kru/rpaframework.git#egg=rpaframework&subdirectory=packages/main"
 
 # Gecko drivers
 RUN dnf install -y \
